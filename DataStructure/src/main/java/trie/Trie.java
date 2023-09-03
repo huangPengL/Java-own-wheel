@@ -13,7 +13,7 @@ public class Trie {
      * Trie树节点
      */
     private static class Node{
-        Map<String, Node> children;
+        Map<Character, Node> children;
         boolean isEnd;
 
         public Node(){
@@ -40,8 +40,7 @@ public class Trie {
         }
         Node cur = this.root;
         char[] ch = word.toCharArray();
-        for (char c : ch) {
-            String curCh = String.valueOf(c);
+        for (char curCh : ch) {
             if (!cur.children.containsKey(curCh)) {
                 cur.children.put(curCh, new Node());
             }
@@ -77,12 +76,41 @@ public class Trie {
         return ans;
     }
 
+    /**
+     * 在Trie中寻找包含target子串的所有元素，用列表返回
+     * @param target
+     * @return
+     */
+    public List<String> matchItems(String target){
+        char[] ch = target.toCharArray();
+        int n = ch.length;
+
+        List<String> ans = new ArrayList<>();
+        for(int i=0;i<n;i++){
+            int j = i;
+            StringBuilder s = new StringBuilder();
+            Node cur = this.root;
+            while(j < n){
+                if(!cur.children.containsKey(ch[j])){
+                    break;
+                }
+                s.append(ch[j]);
+                cur = cur.children.get(ch[j]);
+                if(cur.isEnd){
+                    ans.add(s.toString());
+                }
+                j++;
+            }
+        }
+
+        return ans;
+    }
+
     private Node startWithTargetNode(String target){
         Node cur = this.root;
 
         char[] ch = target.toCharArray();
-        for (char c : ch) {
-            String curCh = String.valueOf(c);
+        for (char curCh : ch) {
             Node next = cur.children.get(curCh);
             // Trie中不包含该字符串，则停止搜索
             if (next == null) {
@@ -105,7 +133,7 @@ public class Trie {
             }
         }
 
-        for(Map.Entry<String, Node> entry: cur.children.entrySet()){
+        for(Map.Entry<Character, Node> entry: cur.children.entrySet()){
             s.append(entry.getKey());
             dfs(entry.getValue(), s, ans);
             s.deleteCharAt(s.length()-1);
