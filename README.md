@@ -7,6 +7,7 @@ Java 自己造轮子系列~
 - LRU缓存
 - Trie树
   - 搜索引擎自动补全
+  - 敏感词过滤
 
 ## Spring-IOC
 - 简单IOC容器管理Bean
