@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class SensitiveWordMatch {
     public static void main(String[] args) {
-        List<String> words = Arrays.asList("白痴", "色色", "脑残", "porn", "sb", "sm");
+        List<String> words = Arrays.asList("白痴", "色色", "脑残", "PORN","porN", "sb", "sm");
 
         Trie trie = new Trie();
 

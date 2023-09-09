@@ -22,16 +22,20 @@ public class Trie {
         }
     }
 
+
+    private final Node root;
+    private final Map<String, Set<String>> map;
     /**
      * 初始化Trie
      */
-    private final Node root;
     public Trie(){
         root = new Node();
+        map = new ConcurrentHashMap<>();
     }
 
     /**
      * 将元素插入到Trie中
+     *
      * @param word
      */
     public void insert(String word){
@@ -41,12 +45,29 @@ public class Trie {
         Node cur = this.root;
         char[] ch = word.toCharArray();
         for (char curCh : ch) {
+            // 字母统一转成小写
+            if(Character.isAlphabetic(curCh)){
+                curCh = Character.toLowerCase(curCh);
+            }
+
             if (!cur.children.containsKey(curCh)) {
                 cur.children.put(curCh, new Node());
             }
             cur = cur.children.get(curCh);
         }
         cur.isEnd = true;
+        String handledWord = toLowerCase(word);
+        map.computeIfAbsent(handledWord, key->ConcurrentHashMap.newKeySet()).add(word);
+    }
+
+    private String toLowerCase(String word) {
+        char[] ch = word.toCharArray();
+        for(int i=0;i<ch.length;i++){
+            if(Character.isAlphabetic(ch[i])){
+                ch[i] = Character.toLowerCase(ch[i]);
+            }
+        }
+        return String.valueOf(ch);
     }
 
     /**
@@ -91,13 +112,17 @@ public class Trie {
             StringBuilder s = new StringBuilder();
             Node cur = this.root;
             while(j < n){
-                if(!cur.children.containsKey(ch[j])){
+                char c = ch[j];
+                if(Character.isAlphabetic(c)){
+                    c = Character.toLowerCase(c);
+                }
+                if(!cur.children.containsKey(c)){
                     break;
                 }
-                s.append(ch[j]);
-                cur = cur.children.get(ch[j]);
+                s.append(c);
+                cur = cur.children.get(c);
                 if(cur.isEnd){
-                    ans.add(s.toString());
+                    ans.addAll(map.get(toLowerCase(s.toString())));
                 }
                 j++;
             }
@@ -111,6 +136,9 @@ public class Trie {
 
         char[] ch = target.toCharArray();
         for (char curCh : ch) {
+            if(Character.isAlphabetic(curCh)){
+                curCh = Character.toLowerCase(curCh);
+            }
             Node next = cur.children.get(curCh);
             // Trie中不包含该字符串，则停止搜索
             if (next == null) {
