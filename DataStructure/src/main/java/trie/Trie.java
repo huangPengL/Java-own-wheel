@@ -77,15 +77,15 @@ public class Trie {
     }
 
     /**
-     * 在Trie中寻找包含target子串的所有元素，用列表返回
+     * 在Trie中寻找包含target子串的所有元素，去重后返回
      * @param target
      * @return
      */
-    public List<String> matchItems(String target){
+    public Set<String> matchItems(String target){
         char[] ch = target.toCharArray();
         int n = ch.length;
 
-        List<String> ans = new ArrayList<>();
+        Set<String> ans = new HashSet<>();
         for(int i=0;i<n;i++){
             int j = i;
             StringBuilder s = new StringBuilder();

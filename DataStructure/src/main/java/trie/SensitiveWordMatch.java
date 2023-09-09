@@ -3,6 +3,7 @@ package trie;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * @Author: huangpenglong
@@ -20,7 +21,7 @@ public class SensitiveWordMatch {
         String cur = scanner.next();
         while(!cur.equals("exit")) {
 
-            List<String> matched = trie.matchItems(cur);
+            Set<String> matched = trie.matchItems(cur);
             System.out.println("测试敏感词匹配：");
             matched.forEach(System.out::println);
             System.out.println();
