@@ -12,6 +12,7 @@
         <module>Spring-IOC</module>
         <module>SpringBoot</module>
         <module>DataStructure</module>
+        <module>Other</module>
     </modules>
 
 </project>
