@@ -13,6 +13,7 @@
         <module>SpringBoot</module>
         <module>DataStructure</module>
         <module>Other</module>
+        <module>SpringMVC</module>
     </modules>
 
 </project>
