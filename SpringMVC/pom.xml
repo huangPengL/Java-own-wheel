@@ -9,7 +9,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.example</groupId>
     <artifactId>SpringMVC</artifactId>
 
     <properties>
@@ -54,7 +53,7 @@
     </dependencies>
 
     <build>
-        <finalName>xhy-web</finalName>
+        <finalName>hpl-web</finalName>
         <resources>
             <resource>
                 <directory>src/main/java</directory>
