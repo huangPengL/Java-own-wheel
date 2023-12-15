@@ -12,4 +12,14 @@ public class BeanNameUrlHandlerMapping extends AbstractHandlerMapping{
     protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
         return null;
     }
+
+    @Override
+    protected void detectHandlerMethod(String name) throws Exception {
+
+    }
+
+    @Override
+    protected boolean isHandler(Class<?> type) {
+        return false;
+    }
 }
