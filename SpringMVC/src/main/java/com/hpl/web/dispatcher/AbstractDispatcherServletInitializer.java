@@ -1,4 +1,4 @@
-package com.hpl.web.support;
+package com.hpl.web.dispatcher;
 
 import com.hpl.web.context.WebApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

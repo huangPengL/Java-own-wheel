@@ -1,1 +1,1 @@
-com.hpl.web.support.WebServletContainerInitializer
+com.hpl.web.dispatcher.WebServletContainerInitializer

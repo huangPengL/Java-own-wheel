@@ -1,4 +1,4 @@
-package com.hpl.web.support;
+package com.hpl.web.dispatcher;
 
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;

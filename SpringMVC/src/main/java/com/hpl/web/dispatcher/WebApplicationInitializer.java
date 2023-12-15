@@ -1,4 +1,4 @@
-package com.hpl.web.support;
+package com.hpl.web.dispatcher;
 
 import javax.servlet.ServletContext;
 
