@@ -1,6 +1,8 @@
 package com.hpl.web.dispatcher;
 
+import com.hpl.web.handler.HandlerExecutionChain;
 import com.hpl.web.handler.HandlerMapping;
+import com.hpl.web.handler.HandlerMethod;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +13,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -48,6 +53,29 @@ public class DispatcherServlet extends BaseHttpServlet{
     }
 
 
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        HandlerExecutionChain handlerExecutionChain;
+        try {
+            handlerExecutionChain = getHandlerExecutionChain(req);
+            HandlerMethod handlerMethod = handlerExecutionChain.getHandlerMethod();
+            System.out.println(handlerMethod);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private HandlerExecutionChain getHandlerExecutionChain(HttpServletRequest req) throws Exception {
+        // 拿到所有组件进行遍历
+        for (HandlerMapping handlerMapping : handlerMappings) {
+            final HandlerExecutionChain handler = handlerMapping.getHandler(req);
+            if (handler != null){
+                return handler;
+            }
+        }
+        return null;
+    }
 
     private void initHandlerMapping(ApplicationContext webApplicationContext) {
         // 从容器中拿

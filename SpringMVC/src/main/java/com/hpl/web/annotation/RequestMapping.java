@@ -24,5 +24,5 @@ public @interface RequestMapping {
      * 请求方法
      * @return
      */
-    RequestMethod[] methods();
+    RequestMethod[] methods() default {};
 }

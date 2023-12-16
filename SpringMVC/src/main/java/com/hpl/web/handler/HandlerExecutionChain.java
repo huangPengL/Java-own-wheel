@@ -11,4 +11,8 @@ public class HandlerExecutionChain {
     public HandlerExecutionChain(HandlerMethod handlerMethod) {
         this.handlerMethod = handlerMethod;
     }
+
+    public HandlerMethod getHandlerMethod() {
+        return handlerMethod;
+    }
 }

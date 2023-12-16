@@ -1,14 +1,18 @@
 package com.hpl.web.handler;
 
+import com.hpl.web.annotation.RequestMethod;
 import com.hpl.web.exception.HttpRequestMethodNotSupport;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * InitializingBean接口为bean提供了初始化方法的方式，它只包括afterPropertiesSet方法，
@@ -26,10 +30,70 @@ public abstract class AbstractHandlerMapping extends ApplicationObjectSupport im
 
         final HandlerMethod handlerInternal = getHandlerInternal(request);
 
+        if(handlerInternal == null){
+            return null;
+        }
+
         final HandlerExecutionChain chain = new HandlerExecutionChain(handlerInternal);
 
         // 拦截器 TODO
 
+        return chain;
+    }
+
+    /**
+     * 根据请求来寻找处理器方法
+     * @return
+     */
+    protected HandlerMethod lookUpPath(HttpServletRequest request) {
+        // 获取「请求路径」 和 「请求类型」
+        String reqPath = request.getRequestURI();
+        String reqMethodType = request.getMethod();
+
+        Map<String, Set<HandlerMethod>> accurateMatchingPath = mapperRegister.getAccurateMatchingPath();
+        Map<String, Set<HandlerMethod>> fuzzyMatchingPath = mapperRegister.getFuzzyMatchingPath();
+
+        // 精确匹配
+        if(accurateMatchingPath.containsKey(reqPath)){
+            HandlerMethod handlerMethod = getHandlerMethod(accurateMatchingPath.get(reqPath), reqMethodType);
+            if(!ObjectUtils.isEmpty(handlerMethod)){
+                return handlerMethod;
+            }
+        }
+        // 尝试模糊匹配
+        Set<Map.Entry<String, Set<HandlerMethod>>> entries = fuzzyMatchingPath.entrySet();
+        LinkedHashSet<Map.Entry<String, Set<HandlerMethod>>> paths = entries.stream()
+                .sorted((o1, o2) -> o2.getKey().compareTo(o1.getKey()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        for(Map.Entry<String, Set<HandlerMethod>> item: paths){
+            String path = item.getKey();
+            Set<HandlerMethod> handlerMethods = item.getValue();
+            if(Pattern.compile(path).matcher(reqPath).matches()){
+                HandlerMethod handlerMethod = getHandlerMethod(handlerMethods, reqMethodType);
+                if(!ObjectUtils.isEmpty(handlerMethod)){
+                    return handlerMethod;
+                }
+            }
+        }
+
+        // 404
+        return null;
+    }
+
+    /**
+     * 从handlerMethods中寻找目标请求类型
+     * @param handlerMethods
+     * @param reqMethodType
+     */
+    private HandlerMethod getHandlerMethod(Set<HandlerMethod> handlerMethods, String reqMethodType) {
+        for(HandlerMethod handlerMethod: handlerMethods){
+            for(RequestMethod method: handlerMethod.getRequestMethods()){
+                if(method.name().equals(reqMethodType)){
+                    return handlerMethod;
+                }
+            }
+        }
         return null;
     }
 
@@ -107,12 +171,12 @@ public abstract class AbstractHandlerMapping extends ApplicationObjectSupport im
         /**
          * 精确路径
          */
-        Map<String, Set<HandlerMethod>> accurateMatchingPath = new HashMap<>();
+        private Map<String, Set<HandlerMethod>> accurateMatchingPath = new HashMap<>();
 
         /**
          * 模糊路径
          */
-        Map<String,Set<HandlerMethod>> fuzzyMatchingPath = new HashMap<>();
+        private Map<String,Set<HandlerMethod>> fuzzyMatchingPath = new HashMap<>();
 
         public void register(HandlerMethod handlerMethod) throws Exception {
             if(handlerMethod == null){

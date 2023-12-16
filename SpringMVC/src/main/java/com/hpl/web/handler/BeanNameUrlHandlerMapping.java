@@ -10,7 +10,7 @@ public class BeanNameUrlHandlerMapping extends AbstractHandlerMapping{
 
     @Override
     protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
-        return null;
+        return lookUpPath(request);
     }
 
     @Override

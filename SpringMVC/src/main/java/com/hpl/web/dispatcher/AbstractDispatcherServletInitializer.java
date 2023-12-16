@@ -30,27 +30,27 @@ public abstract class AbstractDispatcherServletInitializer implements WebApplica
     public void onStartUp(ServletContext servletContext) {
 
         // 创建父容器
-        AnnotationConfigApplicationContext rootApplicationContext = createRootApplicationContext();
+        final AnnotationConfigApplicationContext rootApplicationContext = createRootApplicationContext();
         servletContext.setAttribute(WebApplicationContext.ROOT_NAME,rootApplicationContext);
 
         // 刷新父容器
         rootApplicationContext.refresh();
 
         // 创建子容器
-        WebApplicationContext webApplicationContext = createWebApplicationContext();
+        final WebApplicationContext webApplicationContext = createWebApplicationContext();
 
         // 创建DispatcherServlet
-        DispatcherServlet dispatcherServlet = new DispatcherServlet(webApplicationContext);
+        final DispatcherServlet dispatcherServlet = new DispatcherServlet(webApplicationContext);
         ServletRegistration.Dynamic dynamic = servletContext.addServlet(DEFAULT_SERVLET_NAME, dispatcherServlet);
 
         // 配置Servlel信息
         dynamic.setLoadOnStartup(1);
-        MultipartConfigElement configElement = new MultipartConfigElement(
+        final MultipartConfigElement configElement = new MultipartConfigElement(
                 null,5 * M,5 * M,5);
         dynamic.setMultipartConfig(configElement);
         dynamic.addMapping(getMappings());
 
-        Filter[] filters = getFilters();
+        final Filter[] filters = getFilters();
         if (!ObjectUtils.isEmpty(filters)){
             for (Filter filter : filters) {
                 servletContext.addFilter(DEFAULT_FILTER_NAME,filter);

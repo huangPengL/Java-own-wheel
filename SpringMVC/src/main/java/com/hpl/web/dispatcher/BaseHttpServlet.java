@@ -1,9 +1,9 @@
 package com.hpl.web.dispatcher;
 
 import com.hpl.web.context.AbstractRefreshableWebApplicationContext;
-import com.hpl.web.context.AnnotationConfigWebApplicationContext;
 import com.hpl.web.context.WebApplicationContext;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.ServletConfig;
@@ -36,7 +36,7 @@ public abstract class BaseHttpServlet extends HttpServlet {
 
         // 若web ioc不为空，则设置父容器，配置上下文，刷新容器
         if(!ObjectUtils.isEmpty(webApplicationContext)){
-            if(!(this.webApplicationContext instanceof AnnotationConfigWebApplicationContext)){
+            if(!(this.webApplicationContext instanceof AnnotationConfigApplicationContext)){
                 // 需要转换
                 AbstractRefreshableWebApplicationContext wac =
                         (AbstractRefreshableWebApplicationContext) this.webApplicationContext;
@@ -53,6 +53,8 @@ public abstract class BaseHttpServlet extends HttpServlet {
             }
         }
 
+        // 刷新Servlet(子类实现)
+        onRefresh(webApplicationContext);
     }
 
     protected abstract void onRefresh(ApplicationContext webApplicationContext);

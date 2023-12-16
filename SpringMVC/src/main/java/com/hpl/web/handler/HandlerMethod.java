@@ -102,4 +102,16 @@ public class HandlerMethod {
         result = 31 * result + Arrays.hashCode(requestMethods);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "HandlerMethod{" +
+                "bean=" + bean +
+                ", type=" + type +
+                ", method=" + method +
+                ", parameters=" + Arrays.toString(parameters) +
+                ", path='" + path + '\'' +
+                ", requestMethods=" + Arrays.toString(requestMethods) +
+                '}';
+    }
 }
