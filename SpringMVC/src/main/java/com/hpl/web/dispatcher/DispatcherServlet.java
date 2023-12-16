@@ -1,5 +1,6 @@
 package com.hpl.web.dispatcher;
 
+import com.hpl.web.adapter.HandlerMethodAdapter;
 import com.hpl.web.handler.HandlerExecutionChain;
 import com.hpl.web.handler.HandlerMapping;
 import com.hpl.web.handler.HandlerMethod;
@@ -27,6 +28,8 @@ public class DispatcherServlet extends BaseHttpServlet{
 
     private List<HandlerMapping> handlerMappings = new ArrayList<>();
 
+    private List<HandlerMethodAdapter> handlerMethodAdapters = new ArrayList<>();
+
     private Properties defaultStrategies;
 
     public static final String DEFAULT_STRATEGIES_PATH = "DispatcherServlet.properties";
@@ -46,11 +49,42 @@ public class DispatcherServlet extends BaseHttpServlet{
         initHandlerException(webApplicationContext);
     }
 
-    private void initHandlerException(ApplicationContext webApplicationContext) {
+    private void initHandlerMapping(ApplicationContext webApplicationContext) {
+        // 从容器中拿
+        Map<String, HandlerMapping> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                webApplicationContext, HandlerMapping.class, true, false);
+        if(!ObjectUtils.isEmpty(map)){
+            this.handlerMappings.addAll(map.values());
+        }
+        // 容器没有从配置文件拿
+        else{
+            this.handlerMappings.addAll(getDefaultStrategies(webApplicationContext,HandlerMapping.class));
+        }
+
+        // 排序
+        this.handlerMappings.sort(Comparator.comparingInt(Ordered::getOrder));
     }
 
     private void initHandlerMethodAdapter(ApplicationContext webApplicationContext) {
+        // 从容器中拿
+        Map<String, HandlerMethodAdapter> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                webApplicationContext, HandlerMethodAdapter.class, true, false);
+        if(!ObjectUtils.isEmpty(map)){
+            this.handlerMethodAdapters.addAll(map.values());
+        }
+        // 容器没有从配置文件拿
+        else{
+            this.handlerMethodAdapters.addAll(getDefaultStrategies(webApplicationContext,HandlerMethodAdapter.class));
+        }
+
+        // 排序
+        this.handlerMethodAdapters.sort(Comparator.comparingInt(Ordered::getOrder));
     }
+
+    private void initHandlerException(ApplicationContext webApplicationContext) {
+    }
+
+
 
 
     @Override
@@ -75,22 +109,6 @@ public class DispatcherServlet extends BaseHttpServlet{
             }
         }
         return null;
-    }
-
-    private void initHandlerMapping(ApplicationContext webApplicationContext) {
-        // 从容器中拿
-        Map<String, HandlerMapping> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(
-                webApplicationContext, HandlerMapping.class, true, false);
-        if(!ObjectUtils.isEmpty(map)){
-            this.handlerMappings.addAll(map.values());
-        }
-        // 容器没有从配置文件拿
-        else{
-            this.handlerMappings.addAll(getDefaultStrategies(webApplicationContext,HandlerMapping.class));
-        }
-
-        // 排序
-        this.handlerMappings.sort(Comparator.comparingInt(Ordered::getOrder));
     }
 
     protected <T> List<T> getDefaultStrategies(ApplicationContext context, Class<T> strategyInterface) {
