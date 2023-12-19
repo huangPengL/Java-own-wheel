@@ -8,10 +8,8 @@ import org.springframework.core.MethodParameter;
 
 /**
  * @description: 获取所有普通数据
- * @Author: Xhy
- * @gitee: https://gitee.com/XhyQAQ
- * @copyright: B站: https://space.bilibili.com/152686439
- * @CreateTime: 2023-10-15 14:08
+ * @Author: huangpenglong
+ * @Date: 2023/12/16 21:40
  */
 public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
