@@ -1,7 +1,5 @@
 package com.hpl.web.annotation;
 
-import com.hpl.web.enums.RequestMethod;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,22 +7,15 @@ import java.lang.annotation.Target;
 
 /**
  * @Author: huangpenglong
- * @Date: 2023/12/15 14:42
+ * @Date: 2023/12/21 15:01
  */
-
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequestMapping {
+public @interface RequestHeader {
 
-    /**
-     * 具体路径
-     * @return
-     */
+    // name
     String value() default "";
 
-    /**
-     * 请求方法
-     * @return
-     */
-    RequestMethod[] methods() default {};
+    // 强制需要
+    boolean require() default false;
 }

@@ -6,6 +6,8 @@ import com.hpl.web.resolver.HandlerMethodArgumentResolver;
 import com.hpl.web.support.WebServletRequest;
 import org.springframework.core.MethodParameter;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @description:
  * @Author: huangpenglong
@@ -15,12 +17,12 @@ public class ServletResponseMethodArgumentResolver implements HandlerMethodArgum
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return true;
+        return parameter.getParameterType() == HttpServletResponse.class;
     }
 
 
     @Override
     public Object resolveArgument(MethodParameter parameter, HandlerMethod handlerMethod, WebServletRequest webServletRequest, ConvertComposite convertComposite) throws Exception {
-        return null;
+        return webServletRequest.getResponse();
     }
 }

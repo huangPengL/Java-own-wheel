@@ -1,4 +1,4 @@
-package com.hpl.web.annotation;
+package com.hpl.web.enums;
 
 /**
  * @Author: huangpenglong

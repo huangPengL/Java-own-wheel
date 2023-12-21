@@ -1,6 +1,5 @@
 package com.hpl.web.handler;
 
-import com.hpl.web.annotation.RequestMethod;
 import com.hpl.web.exception.HttpRequestMethodNotSupport;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;

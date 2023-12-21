@@ -1,6 +1,5 @@
 package com.hpl.web.handler;
 
-import com.hpl.web.annotation.RequestMethod;
 import org.springframework.core.MethodParameter;
 
 import java.lang.reflect.Method;

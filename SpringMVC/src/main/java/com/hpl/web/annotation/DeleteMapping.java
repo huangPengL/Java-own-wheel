@@ -1,5 +1,6 @@
 package com.hpl.web.annotation;
 
+import com.hpl.web.enums.RequestMethod;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;
