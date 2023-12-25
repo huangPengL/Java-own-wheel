@@ -18,6 +18,6 @@ public class ConvertHandler extends HandlerMethod{
         if (ObjectUtils.isEmpty(arg)){
             return null;
         }
-        return this.getMethod().invoke(this.getBean(),arg);
+        return this.getMethod().invoke(this.getBean(), arg);
     }
 }

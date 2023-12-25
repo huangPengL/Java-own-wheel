@@ -65,7 +65,7 @@ public class RequestParamMethodArgumentResolver implements HandlerMethodArgument
                         ? parameter.getParameterName()
                         : parameterAnnotation.value();
 
-                return request.getParameter(name);
+                return convertComposite.convert(handlerMethod,parameterType,request.getParameter(name));
             }
         }
         // 对象

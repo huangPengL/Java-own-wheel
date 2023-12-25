@@ -41,6 +41,6 @@ public class RequestHeaderMethodArgumentResolver implements HandlerMethodArgumen
             throw new NotFoundException(handlerMethod.getPath() + "请求头没有携带: " + name);
         }
 
-        return request.getHeader(name);
+        return convertComposite.convert(handlerMethod,parameter.getParameterType(),request.getHeader(name));
     }
 }

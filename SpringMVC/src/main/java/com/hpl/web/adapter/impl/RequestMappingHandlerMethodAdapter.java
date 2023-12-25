@@ -2,7 +2,7 @@ package com.hpl.web.adapter.impl;
 
 import com.hpl.web.adapter.HandlerMethodAdapter;
 import com.hpl.web.annotation.RequestMapping;
-import com.hpl.web.convert.ConvertComposite;
+import com.hpl.web.convert.*;
 import com.hpl.web.handler.HandlerMethod;
 import com.hpl.web.handler.ServletInvocableMethod;
 import com.hpl.web.resolver.HandlerMethodArgumentResolver;
@@ -14,8 +14,8 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * @Author: huangpenglong
@@ -67,8 +67,42 @@ public class RequestMappingHandlerMethodAdapter implements HandlerMethodAdapter,
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        final List<HandlerMethodArgumentResolver> defaultArgumentResolver = getDefaultArgumentResolver();
-        resolverComposite.addResolvers(defaultArgumentResolver);
+        resolverComposite.addResolvers(getDefaultArgumentResolver());
+        convertComposite.addConvertMap(getDefaultConverts());
+    }
+
+    private Map<Class, ConvertHandler> getDefaultConverts() {
+        final Map<Class, ConvertHandler> convertMap = new HashMap<>();
+        convertMap.put(Integer.class,getConvertHandler(new IntegerConvert(Integer.class)));
+        convertMap.put(int.class,getConvertHandler(new IntegerConvert(Integer.class)));
+        convertMap.put(String.class,getConvertHandler(new StringConvert(String.class)));
+        convertMap.put(Long.class,getConvertHandler(new LongConvert(Long.class)));
+        convertMap.put(long.class,getConvertHandler(new LongConvert(Long.class)));
+        convertMap.put(Float.class,getConvertHandler(new FloatConvert(Float.class)));
+        convertMap.put(float.class,getConvertHandler(new FloatConvert(Float.class)));
+        convertMap.put(Boolean.class,getConvertHandler(new BooleanConvert(Boolean.class)));
+        convertMap.put(boolean.class,getConvertHandler(new BooleanConvert(Boolean.class)));
+        convertMap.put(Byte.class,getConvertHandler(new ByteConvert(Byte.class)));
+        convertMap.put(byte.class,getConvertHandler(new ByteConvert(Byte.class)));
+        convertMap.put(Short.class,getConvertHandler(new ShortConvert(Short.class)));
+        convertMap.put(short.class,getConvertHandler(new ShortConvert(Short.class)));
+        convertMap.put(Date.class,getConvertHandler(new DateConvert(Date.class)));
+        convertMap.put(Map.class,getConvertHandler(new MapConvert(HashMap.class)));
+        convertMap.put(Collection.class,getConvertHandler(new CollectionConvert(Collection.class)));
+        convertMap.put(List.class,getConvertHandler(new ListConvert(ArrayList.class)));
+        convertMap.put(Set.class,getConvertHandler(new SetConvert(HashSet.class)));
+        return convertMap;
+    }
+
+    private ConvertHandler getConvertHandler(Convert convert) {
+        try {
+            final Method method = convert.getClass().getDeclaredMethod("convert", Object.class);
+            return new ConvertHandler(convert, method);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**

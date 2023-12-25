@@ -38,7 +38,7 @@ public class RequestCookieMethodArgumentResolver implements HandlerMethodArgumen
         javax.servlet.http.Cookie[] cookies = webServletRequest.getRequest().getCookies();
         for (javax.servlet.http.Cookie cookie : cookies) {
             if(cookie.getName().equals(name)){
-                return cookie.getValue();
+                return convertComposite.convert(handlerMethod, parameter.getParameterType(), cookie.getValue());
             }
         }
         return null;

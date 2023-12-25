@@ -1,11 +1,14 @@
 package com.hpl.web.handler;
 
+import com.hpl.web.convert.ConvertHandler;
 import com.hpl.web.enums.RequestMethod;
 import org.springframework.core.MethodParameter;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,6 +28,8 @@ public class HandlerMethod {
     protected String path;
 
     protected RequestMethod[] requestMethods = new RequestMethod[0];
+
+    protected Map<Class, ConvertHandler> convertHandlerMap = new HashMap<>();
 
     public HandlerMethod() {
     }
@@ -90,6 +95,14 @@ public class HandlerMethod {
         this.requestMethods = requestMethods;
     }
 
+    public Map<Class, ConvertHandler> getConvertHandlerMap() {
+        return convertHandlerMap;
+    }
+
+    public void setConvertHandlerMap(Map<Class, ConvertHandler> convertHandlerMap) {
+        this.convertHandlerMap = convertHandlerMap;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,6 +110,7 @@ public class HandlerMethod {
         HandlerMethod that = (HandlerMethod) o;
         return Objects.equals(path, that.path) && Arrays.equals(requestMethods, that.requestMethods);
     }
+
 
     @Override
     public int hashCode() {
@@ -114,6 +128,7 @@ public class HandlerMethod {
                 ", parameters=" + Arrays.toString(parameters) +
                 ", path='" + path + '\'' +
                 ", requestMethods=" + Arrays.toString(requestMethods) +
+                ", convertHandlerMap=" + convertHandlerMap +
                 '}';
     }
 }

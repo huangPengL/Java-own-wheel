@@ -56,6 +56,6 @@ public class PathVariableMethodArgumentResolver implements HandlerMethodArgument
             split = request.getRequestURI().split("/");
             result = split[index];
         }
-        return result;
+        return convertComposite.convert(handlerMethod, parameter.getParameterType(), result);
     }
 }
