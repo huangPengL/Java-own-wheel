@@ -2,8 +2,11 @@ package com.hpl.web.adapter.impl;
 
 import com.hpl.web.adapter.HandlerMethodAdapter;
 import com.hpl.web.annotation.RequestMapping;
+import com.hpl.web.convert.ConvertComposite;
 import com.hpl.web.handler.HandlerMethod;
+import com.hpl.web.handler.ServletInvocableMethod;
 import com.hpl.web.resolver.HandlerMethodArgumentResolver;
+import com.hpl.web.resolver.HandlerMethodReturnValueHandlerComposite;
 import com.hpl.web.resolver.hmar.*;
 import com.hpl.web.support.WebServletRequest;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,6 +26,10 @@ public class RequestMappingHandlerMethodAdapter implements HandlerMethodAdapter,
     private int order = 0;
     private HandlerMethodArgumentResolverComposite resolverComposite = new HandlerMethodArgumentResolverComposite();
 
+    private ConvertComposite convertComposite = new ConvertComposite();
+
+    private HandlerMethodReturnValueHandlerComposite returnValueHandlerComposite = new HandlerMethodReturnValueHandlerComposite();
+
     @Override
     public boolean support(HandlerMethod handlerMethod) {
         return AnnotatedElementUtils.hasAnnotation(handlerMethod.getMethod(), RequestMapping.class);
@@ -39,9 +46,14 @@ public class RequestMappingHandlerMethodAdapter implements HandlerMethodAdapter,
     @Override
     public void handler(HttpServletRequest request, HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
         final WebServletRequest webServletRequest = new WebServletRequest(request, response);
+        final ServletInvocableMethod invocableMethod = new ServletInvocableMethod();
 
-        // 参数解析
+        invocableMethod.setHandlerMethod(handlerMethod);
+        invocableMethod.setConvertComposite(this.convertComposite);
+        invocableMethod.setMethodArgumentResolverComposite(this.resolverComposite);
+        invocableMethod.setReturnValueHandlerComposite(this.returnValueHandlerComposite);
 
+        invocableMethod.invokeAndHandle(webServletRequest,handlerMethod);
     }
 
     @Override

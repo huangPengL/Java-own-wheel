@@ -26,6 +26,8 @@ public class HandlerMethod {
 
     protected RequestMethod[] requestMethods = new RequestMethod[0];
 
+    public HandlerMethod() {
+    }
 
     public HandlerMethod(Object bean, Method method) {
         this.bean = bean;

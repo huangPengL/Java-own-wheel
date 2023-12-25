@@ -1,6 +1,7 @@
 package com.hpl.web.dispatcher;
 
 import com.hpl.web.adapter.HandlerMethodAdapter;
+import com.hpl.web.exception.NotFoundException;
 import com.hpl.web.handler.HandlerExecutionChain;
 import com.hpl.web.handler.HandlerMapping;
 import com.hpl.web.handler.HandlerMethod;
@@ -92,12 +93,32 @@ public class DispatcherServlet extends BaseHttpServlet{
 
         HandlerExecutionChain handlerExecutionChain;
         try {
+            // 根据请求获取请求处理器方法
             handlerExecutionChain = getHandlerExecutionChain(req);
+            if (ObjectUtils.isEmpty(handlerExecutionChain)){
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
             HandlerMethod handlerMethod = handlerExecutionChain.getHandlerMethod();
-            System.out.println(handlerMethod);
+
+            // 根据请求、处理器方法，获取适配器进行适配处理
+            final HandlerMethodAdapter hma = getHandlerMethodAdapter(handlerMethod);
+            hma.handler(req, resp, handlerMethod);
+
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+    }
+
+    private HandlerMethodAdapter getHandlerMethodAdapter(HandlerMethod handlerMethod) throws NotFoundException {
+        for (HandlerMethodAdapter handlerMethodAdapter : this.handlerMethodAdapters) {
+            if(handlerMethodAdapter.support(handlerMethod)) {
+                return handlerMethodAdapter;
+            }
+        }
+        throw new NotFoundException(handlerMethod + "没有支持的适配器");
     }
 
     private HandlerExecutionChain getHandlerExecutionChain(HttpServletRequest req) throws Exception {

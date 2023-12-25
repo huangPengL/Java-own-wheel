@@ -8,14 +8,12 @@ import com.hpl.web.resolver.HandlerMethodArgumentResolver;
 import com.hpl.web.support.WebServletRequest;
 import com.hpl.web.utils.MultipartUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 
@@ -84,7 +82,7 @@ public class RequestParamMethodArgumentResolver implements HandlerMethodArgument
             Object o = ReflectionUtils.accessibleConstructor(parameterType).newInstance();
 
             // 遍历对象的成员，并赋值
-            Field[] fields = parameterType.getFields();
+            final Field[] fields = parameterType.getDeclaredFields();
             initObjFields(parameterMap, o, fields, handlerMethod, convertComposite);
 
             return o;
@@ -101,7 +99,7 @@ public class RequestParamMethodArgumentResolver implements HandlerMethodArgument
 
             // 简单类型
             if(BeanUtils.isSimpleProperty(type)){
-                if(parameterMap.containsKey(type.getName())){
+                if(parameterMap.containsKey(field.getName())){
                     field.setAccessible(true);
                     field.set(o,convertComposite.convert(handlerMethod, type,parameterMap.get(field.getName())[0]));
                     field.setAccessible(false);
