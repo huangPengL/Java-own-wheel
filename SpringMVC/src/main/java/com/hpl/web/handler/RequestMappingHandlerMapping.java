@@ -1,6 +1,7 @@
 package com.hpl.web.handler;
 
 import com.hpl.web.annotation.RequestMapping;
+import com.hpl.web.annotation.RestController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Controller;
@@ -94,7 +95,7 @@ public class RequestMappingHandlerMapping extends AbstractHandlerMapping{
      */
     @Override
     protected boolean isHandler(Class<?> type) {
-        return AnnotatedElementUtils.hasAnnotation(type, Controller.class);
-        // || AnnotatedElementUtils.hasAnnotation(type, RequestMapping.class);
+        return AnnotatedElementUtils.hasAnnotation(type, Controller.class)
+         || AnnotatedElementUtils.hasAnnotation(type, RestController.class);
     }
 }

@@ -6,8 +6,10 @@ import com.hpl.web.convert.*;
 import com.hpl.web.handler.HandlerMethod;
 import com.hpl.web.handler.ServletInvocableMethod;
 import com.hpl.web.resolver.HandlerMethodArgumentResolver;
-import com.hpl.web.resolver.HandlerMethodReturnValueHandlerComposite;
+import com.hpl.web.resolver.HandlerMethodReturnValueHandler;
+import com.hpl.web.resolver.hmrvh.HandlerMethodReturnValueHandlerComposite;
 import com.hpl.web.resolver.hmar.*;
+import com.hpl.web.resolver.hmrvh.RequestResponseBodyMethodReturnValueHandler;
 import com.hpl.web.support.WebServletRequest;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -69,6 +71,14 @@ public class RequestMappingHandlerMethodAdapter implements HandlerMethodAdapter,
     public void afterPropertiesSet() throws Exception {
         resolverComposite.addResolvers(getDefaultArgumentResolver());
         convertComposite.addConvertMap(getDefaultConverts());
+        returnValueHandlerComposite.addMethodReturnValueHandlers(getDefalutMethodReturnValueHandlers());
+    }
+
+    private List<HandlerMethodReturnValueHandler> getDefalutMethodReturnValueHandlers() {
+        final List<HandlerMethodReturnValueHandler> methodReturnValueHandlerList = new ArrayList<>();
+        methodReturnValueHandlerList.add(new RequestResponseBodyMethodReturnValueHandler());
+
+        return methodReturnValueHandlerList;
     }
 
     private Map<Class, ConvertHandler> getDefaultConverts() {

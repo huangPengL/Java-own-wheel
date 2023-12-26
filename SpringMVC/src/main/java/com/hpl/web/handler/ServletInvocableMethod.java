@@ -2,7 +2,7 @@ package com.hpl.web.handler;
 
 import com.hpl.web.convert.ConvertComposite;
 import com.hpl.web.exception.NotFoundException;
-import com.hpl.web.resolver.HandlerMethodReturnValueHandlerComposite;
+import com.hpl.web.resolver.hmrvh.HandlerMethodReturnValueHandlerComposite;
 import com.hpl.web.resolver.hmar.HandlerMethodArgumentResolverComposite;
 import com.hpl.web.support.WebServletRequest;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -79,7 +79,8 @@ public class ServletInvocableMethod extends HandlerMethod{
         final Object result = doInvoke(methodArguments);
 
         // 选择返回值处理器，处理返回值
-        System.out.println(result);
+        this.returnValueHandlerComposite.doInvoke(
+                result, handlerMethod.getMethod(), webServletRequest);
     }
 
     private Object[] getMethodArguments(WebServletRequest webServletRequest, HandlerMethod handlerMethod, Object[] providerArgs) throws Exception {
