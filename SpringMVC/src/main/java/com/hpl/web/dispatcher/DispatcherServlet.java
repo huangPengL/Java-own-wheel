@@ -5,6 +5,7 @@ import com.hpl.web.exception.NotFoundException;
 import com.hpl.web.handler.HandlerExecutionChain;
 import com.hpl.web.handler.HandlerMapping;
 import com.hpl.web.handler.HandlerMethod;
+import com.hpl.web.resolver.HandlerExceptionResolver;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;
@@ -30,6 +31,8 @@ public class DispatcherServlet extends BaseHttpServlet{
     private List<HandlerMapping> handlerMappings = new ArrayList<>();
 
     private List<HandlerMethodAdapter> handlerMethodAdapters = new ArrayList<>();
+
+    private List<HandlerExceptionResolver> handlerExceptionResolvers = new ArrayList<>();
 
     private Properties defaultStrategies;
 
@@ -83,6 +86,17 @@ public class DispatcherServlet extends BaseHttpServlet{
     }
 
     private void initHandlerException(ApplicationContext webApplicationContext) {
+        // 从容器中拿
+        final Map<String, HandlerExceptionResolver> map = BeanFactoryUtils.beansOfTypeIncludingAncestors(webApplicationContext, HandlerExceptionResolver.class, true, false);
+        if (!ObjectUtils.isEmpty(map)){
+            this.handlerExceptionResolvers = new ArrayList<>(map.values());
+        }
+        // 则从默认配置文件中拿
+        else {
+
+            this.handlerExceptionResolvers.addAll(getDefaultStrategies(webApplicationContext,HandlerExceptionResolver.class));
+        }
+        this.handlerExceptionResolvers.sort(Comparator.comparingInt(Ordered::getOrder));
     }
 
 
@@ -91,7 +105,8 @@ public class DispatcherServlet extends BaseHttpServlet{
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        HandlerExecutionChain handlerExecutionChain;
+        HandlerExecutionChain handlerExecutionChain = null;
+        Exception ex = null;
         try {
             // 根据请求获取请求处理器方法
             handlerExecutionChain = getHandlerExecutionChain(req);
@@ -106,10 +121,29 @@ public class DispatcherServlet extends BaseHttpServlet{
             final HandlerMethodAdapter hma = getHandlerMethodAdapter(handlerMethod);
             hma.handler(req, resp, handlerMethod);
 
+            // todo 拦截器
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ex = e;
         }
+
+        processResult(req, resp, handlerExecutionChain, ex);
+    }
+
+    private void processResult(HttpServletRequest req, HttpServletResponse resp, HandlerExecutionChain handlerExecutionChain, Exception ex) throws ServletException, IOException {
+        if(ex != null){
+            processResultException(req,resp,handlerExecutionChain.getHandlerMethod(),ex);
+        }
+    }
+
+    private void processResultException(HttpServletRequest req, HttpServletResponse resp, HandlerMethod handlerMethod, Exception ex) throws ServletException, IOException {
+
+        for (HandlerExceptionResolver handlerExceptionResolver : this.handlerExceptionResolvers) {
+            if (handlerExceptionResolver.resolveException(req, resp, handlerMethod, ex)) {
+                return;
+            }
+        }
+        throw new ServletException(ex.getMessage());
     }
 
     private HandlerMethodAdapter getHandlerMethodAdapter(HandlerMethod handlerMethod) throws NotFoundException {

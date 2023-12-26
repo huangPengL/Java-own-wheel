@@ -83,24 +83,24 @@ public class RequestMappingHandlerMethodAdapter implements HandlerMethodAdapter,
 
     private Map<Class, ConvertHandler> getDefaultConverts() {
         final Map<Class, ConvertHandler> convertMap = new HashMap<>();
-        convertMap.put(Integer.class,getConvertHandler(new IntegerConvert(Integer.class)));
-        convertMap.put(int.class,getConvertHandler(new IntegerConvert(Integer.class)));
-        convertMap.put(String.class,getConvertHandler(new StringConvert(String.class)));
-        convertMap.put(Long.class,getConvertHandler(new LongConvert(Long.class)));
-        convertMap.put(long.class,getConvertHandler(new LongConvert(Long.class)));
-        convertMap.put(Float.class,getConvertHandler(new FloatConvert(Float.class)));
-        convertMap.put(float.class,getConvertHandler(new FloatConvert(Float.class)));
-        convertMap.put(Boolean.class,getConvertHandler(new BooleanConvert(Boolean.class)));
-        convertMap.put(boolean.class,getConvertHandler(new BooleanConvert(Boolean.class)));
-        convertMap.put(Byte.class,getConvertHandler(new ByteConvert(Byte.class)));
-        convertMap.put(byte.class,getConvertHandler(new ByteConvert(Byte.class)));
-        convertMap.put(Short.class,getConvertHandler(new ShortConvert(Short.class)));
-        convertMap.put(short.class,getConvertHandler(new ShortConvert(Short.class)));
-        convertMap.put(Date.class,getConvertHandler(new DateConvert(Date.class)));
-        convertMap.put(Map.class,getConvertHandler(new MapConvert(HashMap.class)));
-        convertMap.put(Collection.class,getConvertHandler(new CollectionConvert(Collection.class)));
-        convertMap.put(List.class,getConvertHandler(new ListConvert(ArrayList.class)));
-        convertMap.put(Set.class,getConvertHandler(new SetConvert(HashSet.class)));
+//        convertMap.put(Integer.class,getConvertHandler(new IntegerConvert(Integer.class)));
+//        convertMap.put(int.class,getConvertHandler(new IntegerConvert(Integer.class)));
+//        convertMap.put(String.class,getConvertHandler(new StringConvert(String.class)));
+//        convertMap.put(Long.class,getConvertHandler(new LongConvert(Long.class)));
+//        convertMap.put(long.class,getConvertHandler(new LongConvert(Long.class)));
+//        convertMap.put(Float.class,getConvertHandler(new FloatConvert(Float.class)));
+//        convertMap.put(float.class,getConvertHandler(new FloatConvert(Float.class)));
+//        convertMap.put(Boolean.class,getConvertHandler(new BooleanConvert(Boolean.class)));
+//        convertMap.put(boolean.class,getConvertHandler(new BooleanConvert(Boolean.class)));
+//        convertMap.put(Byte.class,getConvertHandler(new ByteConvert(Byte.class)));
+//        convertMap.put(byte.class,getConvertHandler(new ByteConvert(Byte.class)));
+//        convertMap.put(Short.class,getConvertHandler(new ShortConvert(Short.class)));
+//        convertMap.put(short.class,getConvertHandler(new ShortConvert(Short.class)));
+//        convertMap.put(Date.class,getConvertHandler(new DateConvert(Date.class)));
+//        convertMap.put(Map.class,getConvertHandler(new MapConvert(HashMap.class)));
+//        convertMap.put(Collection.class,getConvertHandler(new CollectionConvert(Collection.class)));
+//        convertMap.put(List.class,getConvertHandler(new ListConvert(ArrayList.class)));
+//        convertMap.put(Set.class,getConvertHandler(new SetConvert(HashSet.class)));
         return convertMap;
     }
 
