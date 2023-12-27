@@ -23,7 +23,7 @@ public interface HandlerExceptionResolver extends Ordered{
      * @return
      * @throws Exception
      */
-    Boolean resolveException(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler, Exception ex) throws ServletException, IOException;
+    Boolean resolveException(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler, Exception ex) throws Exception;
 
     @Override
     int getOrder();

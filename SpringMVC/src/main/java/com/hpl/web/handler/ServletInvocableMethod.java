@@ -83,25 +83,41 @@ public class ServletInvocableMethod extends HandlerMethod{
                 result, handlerMethod.getMethod(), webServletRequest);
     }
 
-    private Object[] getMethodArguments(WebServletRequest webServletRequest, HandlerMethod handlerMethod, Object[] providerArgs) throws Exception {
+    private Object[] getMethodArguments(WebServletRequest webServletRequest, HandlerMethod handlerMethod, Object... providerArgs) throws Exception {
 
         final MethodParameter[] parameters = handlerMethod.getParameters();
         Object args[] = new Object[parameters.length];
 
         for(int i=0;i<parameters.length;i++){
+            //
             MethodParameter parameter = parameters[i];
-
             parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
 
+            // 只有异常处理器方法被调用时候才会传递providerArgs
+            args[i] = findProviderArgs(parameter,providerArgs);
+            if (args[i]!=null){
+                continue;
+            }
+
+            // 参数解析器
             if(!this.methodArgumentResolverComposite.supportsParameter(parameter)){
                 throw new NotFoundException("没有参数解析器解析参数:" +parameter.getParameterType());
             }
-
             args[i] = this.methodArgumentResolverComposite.resolveArgument(
                     parameter, handlerMethod, webServletRequest, this.convertComposite);
         }
 
         return args;
+    }
+
+    private Object findProviderArgs(MethodParameter parameter, Object[] providerArgs) {
+        final Class<?> parameterType = parameter.getParameterType();
+        for (Object providerArg : providerArgs) {
+            if (parameterType.isInstance(providerArg)){
+                return providerArg;
+            }
+        }
+        return null;
     }
 
     private Object doInvoke(Object[] methodArguments) throws Exception {

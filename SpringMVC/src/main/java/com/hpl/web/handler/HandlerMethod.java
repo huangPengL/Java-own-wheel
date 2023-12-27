@@ -31,6 +31,8 @@ public class HandlerMethod {
 
     protected Map<Class, ConvertHandler> convertHandlerMap = new HashMap<>();
 
+    private Map<Class, ExceptionHandlerMethod> exceptionHandlerMethodMap = new HashMap<>();
+
     public HandlerMethod() {
     }
 
@@ -101,6 +103,14 @@ public class HandlerMethod {
 
     public void setConvertHandlerMap(Map<Class, ConvertHandler> convertHandlerMap) {
         this.convertHandlerMap = convertHandlerMap;
+    }
+
+    public Map<Class, ExceptionHandlerMethod> getExceptionHandlerMethodMap() {
+        return exceptionHandlerMethodMap;
+    }
+
+    public void setExceptionHandlerMethodMap(Map<Class, ExceptionHandlerMethod> exceptionHandlerMethodMap) {
+        this.exceptionHandlerMethodMap = exceptionHandlerMethodMap;
     }
 
     @Override

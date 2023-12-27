@@ -127,16 +127,21 @@ public class DispatcherServlet extends BaseHttpServlet{
             ex = e;
         }
 
-        processResult(req, resp, handlerExecutionChain, ex);
+        try {
+            processResult(req, resp, handlerExecutionChain, ex);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
-    private void processResult(HttpServletRequest req, HttpServletResponse resp, HandlerExecutionChain handlerExecutionChain, Exception ex) throws ServletException, IOException {
+    private void processResult(HttpServletRequest req, HttpServletResponse resp, HandlerExecutionChain handlerExecutionChain, Exception ex) throws Exception {
         if(ex != null){
             processResultException(req,resp,handlerExecutionChain.getHandlerMethod(),ex);
         }
     }
 
-    private void processResultException(HttpServletRequest req, HttpServletResponse resp, HandlerMethod handlerMethod, Exception ex) throws ServletException, IOException {
+    private void processResultException(HttpServletRequest req, HttpServletResponse resp, HandlerMethod handlerMethod, Exception ex) throws Exception {
 
         for (HandlerExceptionResolver handlerExceptionResolver : this.handlerExceptionResolvers) {
             if (handlerExceptionResolver.resolveException(req, resp, handlerMethod, ex)) {

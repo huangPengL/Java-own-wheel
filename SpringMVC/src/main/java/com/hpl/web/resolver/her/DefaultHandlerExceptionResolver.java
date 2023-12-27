@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ *
+ *  全局异常处理器
  * @Author: huangpenglong
  * @Date: 2023/12/26 17:26
  */

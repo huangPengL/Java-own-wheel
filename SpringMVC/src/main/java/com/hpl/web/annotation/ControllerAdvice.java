@@ -9,13 +9,11 @@ import java.lang.annotation.Target;
 
 /**
  * @Author: huangpenglong
- * @Date: 2023/12/26 16:32
+ * @Date: 2023/12/27 16:05
  */
 
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ResponseBody
 @Controller
-public @interface RestController {
-    
+public @interface ControllerAdvice {
 }

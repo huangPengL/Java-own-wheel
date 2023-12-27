@@ -1,5 +1,6 @@
 package com.hpl.web.handler;
 
+import com.hpl.web.annotation.ExceptionHandler;
 import com.hpl.web.annotation.RequestMapping;
 import com.hpl.web.annotation.RestController;
 import org.springframework.context.ApplicationContext;
@@ -10,7 +11,9 @@ import org.springframework.util.ObjectUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: huangpenglong
@@ -55,9 +58,19 @@ public class RequestMappingHandlerMapping extends AbstractHandlerMapping{
             rootPath = (rm == null || "".equals(rm.value())) ? "" : rm.value();
         }
 
-        // 方法上是否有RequestMapping注解
+        // 收集[局部]异常解析器
+        Map<Class,ExceptionHandlerMethod> exceptionHandlerMethodMap = new HashMap<>();
+
+        //
         final Object bean = applicationContext.getBean(name);
         for(Method method: declaredMethods){
+            // 方法上是否有@ExceptionHandler注解
+            if(AnnotatedElementUtils.hasAnnotation(method, ExceptionHandler.class)){
+                final ExceptionHandler exceptionHandler = AnnotatedElementUtils.findMergedAnnotation(
+                        method, ExceptionHandler.class);
+                exceptionHandlerMethodMap.put(exceptionHandler.value(),new ExceptionHandlerMethod(bean,method));
+            }
+            // 方法上是否有@RequestMapping注解
             if(AnnotatedElementUtils.hasAnnotation(method, RequestMapping.class)){
                 // 收集
                 final HandlerMethod handlerMethod = new HandlerMethod(bean, method);
@@ -82,6 +95,9 @@ public class RequestMappingHandlerMapping extends AbstractHandlerMapping{
         // 注册HandlerMethod
         if (!ObjectUtils.isEmpty(handlerMethods)) {
             for (HandlerMethod handlerMethod : handlerMethods) {
+
+                handlerMethod.setExceptionHandlerMethodMap(exceptionHandlerMethodMap);
+
                 registerMapper(handlerMethod);
             }
         }
