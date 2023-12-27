@@ -1,6 +1,8 @@
 package com.hpl.web.adapter.impl;
 
 import com.hpl.web.adapter.HandlerMethodAdapter;
+import com.hpl.web.annotation.ControllerAdvice;
+import com.hpl.web.annotation.ConvertType;
 import com.hpl.web.annotation.RequestMapping;
 import com.hpl.web.convert.*;
 import com.hpl.web.handler.HandlerMethod;
@@ -11,7 +13,10 @@ import com.hpl.web.resolver.hmrvh.HandlerMethodReturnValueHandlerComposite;
 import com.hpl.web.resolver.hmar.*;
 import com.hpl.web.resolver.hmrvh.RequestResponseBodyMethodReturnValueHandler;
 import com.hpl.web.support.WebServletRequest;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +28,7 @@ import java.util.*;
  * @Author: huangpenglong
  * @Date: 2023/12/16 21:09
  */
-public class RequestMappingHandlerMethodAdapter implements HandlerMethodAdapter, InitializingBean {
+public class RequestMappingHandlerMethodAdapter extends ApplicationObjectSupport implements HandlerMethodAdapter, InitializingBean {
 
     private int order = 0;
     private HandlerMethodArgumentResolverComposite resolverComposite = new HandlerMethodArgumentResolverComposite();
@@ -72,6 +77,28 @@ public class RequestMappingHandlerMethodAdapter implements HandlerMethodAdapter,
         resolverComposite.addResolvers(getDefaultArgumentResolver());
         convertComposite.addConvertMap(getDefaultConverts());
         returnValueHandlerComposite.addMethodReturnValueHandlers(getDefalutMethodReturnValueHandlers());
+
+        convertComposite.addConvertMap(getDiyConvertMap());
+    }
+
+    /**
+     * 初始化用户自定义的类型转换器
+     * @return
+     */
+    private Map<Class, ConvertHandler> getDiyConvertMap() {
+        final HashMap<Class, ConvertHandler> convertHandlerHashMap = new HashMap<>();
+        final ApplicationContext context = obtainApplicationContext();
+        final String[] names = BeanFactoryUtils.beanNamesForAnnotationIncludingAncestors(context, ControllerAdvice.class);
+        for (String name : names) {
+            final Class<?> type = context.getType(name);
+            for (Method method : type.getDeclaredMethods()) {
+                if (AnnotatedElementUtils.hasAnnotation(method, ConvertType.class)){
+                    final ConvertType convertType = AnnotatedElementUtils.findMergedAnnotation(method, ConvertType.class);
+                    convertHandlerHashMap.put(convertType.value(),new ConvertHandler(context.getBean(name),method));
+                }
+            }
+        }
+        return convertHandlerHashMap;
     }
 
     private List<HandlerMethodReturnValueHandler> getDefalutMethodReturnValueHandlers() {

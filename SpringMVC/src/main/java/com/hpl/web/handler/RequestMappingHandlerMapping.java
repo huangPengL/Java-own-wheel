@@ -1,8 +1,10 @@
 package com.hpl.web.handler;
 
+import com.hpl.web.annotation.ConvertType;
 import com.hpl.web.annotation.ExceptionHandler;
 import com.hpl.web.annotation.RequestMapping;
 import com.hpl.web.annotation.RestController;
+import com.hpl.web.convert.ConvertHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Controller;
@@ -59,11 +61,19 @@ public class RequestMappingHandlerMapping extends AbstractHandlerMapping{
         }
 
         // 收集[局部]异常解析器
-        Map<Class,ExceptionHandlerMethod> exceptionHandlerMethodMap = new HashMap<>();
+        Map<Class, ExceptionHandlerMethod> exceptionHandlerMethodMap = new HashMap<>();
 
-        //
+        // 收集[局部]类型转换器
+        Map<Class, ConvertHandler> convertHandlerMap = new HashMap<>();
+
         final Object bean = applicationContext.getBean(name);
         for(Method method: declaredMethods){
+
+            // 方法上是否有@ConvertType注解
+            if(AnnotatedElementUtils.hasAnnotation(method, ConvertType.class)){
+                final ConvertType convertType = AnnotatedElementUtils.findMergedAnnotation(method, ConvertType.class);
+                convertHandlerMap.put(convertType.value(),new ConvertHandler(bean,method));
+            }
             // 方法上是否有@ExceptionHandler注解
             if(AnnotatedElementUtils.hasAnnotation(method, ExceptionHandler.class)){
                 final ExceptionHandler exceptionHandler = AnnotatedElementUtils.findMergedAnnotation(
@@ -95,6 +105,8 @@ public class RequestMappingHandlerMapping extends AbstractHandlerMapping{
         // 注册HandlerMethod
         if (!ObjectUtils.isEmpty(handlerMethods)) {
             for (HandlerMethod handlerMethod : handlerMethods) {
+
+                handlerMethod.setConvertHandlerMap(convertHandlerMap);
 
                 handlerMethod.setExceptionHandlerMethodMap(exceptionHandlerMethodMap);
 
