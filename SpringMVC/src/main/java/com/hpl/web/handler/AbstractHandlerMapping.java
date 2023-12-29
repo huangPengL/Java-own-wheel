@@ -2,6 +2,8 @@ package com.hpl.web.handler;
 
 import com.hpl.web.enums.RequestMethod;
 import com.hpl.web.exception.HttpRequestMethodNotSupport;
+import com.hpl.web.interceptor.HandlerInterceptor;
+import com.hpl.web.interceptor.MappedInterceptor;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +25,14 @@ import java.util.stream.Collectors;
 public abstract class AbstractHandlerMapping extends ApplicationObjectSupport implements HandlerMapping, InitializingBean {
 
     protected int order;
+
+    private final List<HandlerInterceptor> handlerInterceptors = new ArrayList<>();
     protected  MapperRegister mapperRegister = new MapperRegister();
+
+    public void addHandlerInterceptors(List<MappedInterceptor> handlerInterceptors) {
+        this.handlerInterceptors.addAll(handlerInterceptors);
+    }
+
 
     @Override
     public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
@@ -36,7 +45,8 @@ public abstract class AbstractHandlerMapping extends ApplicationObjectSupport im
 
         final HandlerExecutionChain chain = new HandlerExecutionChain(handlerInternal);
 
-        // 拦截器 TODO
+        // 拦截器
+        chain.setInterceptors(this.handlerInterceptors);
 
         return chain;
     }

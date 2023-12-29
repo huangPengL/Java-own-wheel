@@ -5,10 +5,13 @@ import com.hpl.web.adapter.impl.RequestMappingHandlerMethodAdapter;
 import com.hpl.web.handler.HandlerMapping;
 import com.hpl.web.handler.RequestMappingHandlerMapping;
 import com.hpl.web.interceptor.InterceptorRegistry;
+import com.hpl.web.interceptor.MappedInterceptor;
 import com.hpl.web.resolver.HandlerExceptionResolver;
 import com.hpl.web.resolver.her.DefaultHandlerExceptionResolver;
 import com.hpl.web.resolver.her.ExceptionHandlerExceptionResolver;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
 
 
 /**
@@ -24,6 +27,14 @@ public abstract class WebMvcConfigurationSupport {
 
         final RequestMappingHandlerMapping requestMappingHandlerMapping = new RequestMappingHandlerMapping();
         requestMappingHandlerMapping.setOrder(0);
+
+        // 拦截器注册中心组件初始化
+        final InterceptorRegistry registry = new InterceptorRegistry();
+        getIntercept(registry);
+
+        // 获取拦截器 添加到请求映射器中
+        final List<MappedInterceptor> interceptors = registry.getInterceptors();
+        requestMappingHandlerMapping.addHandlerInterceptors(interceptors);
 
         return requestMappingHandlerMapping;
     }

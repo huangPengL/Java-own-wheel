@@ -117,11 +117,17 @@ public class DispatcherServlet extends BaseHttpServlet{
 
             HandlerMethod handlerMethod = handlerExecutionChain.getHandlerMethod();
 
+            // 拦截器 preInterceptor
+            if(!handlerExecutionChain.applyPreInterceptor(req, resp)){
+                return;
+            }
+
             // 根据请求、处理器方法，获取适配器进行适配处理
             final HandlerMethodAdapter hma = getHandlerMethodAdapter(handlerMethod);
             hma.handler(req, resp, handlerMethod);
 
-            // todo 拦截器
+            // 拦截器 postInterceptor
+            handlerExecutionChain.applyPostInterceptor(req, resp);
 
         } catch (Exception e) {
             ex = e;
@@ -139,6 +145,9 @@ public class DispatcherServlet extends BaseHttpServlet{
         if(ex != null){
             processResultException(req,resp,handlerExecutionChain.getHandlerMethod(),ex);
         }
+
+        // 拦截器 afterCompletion
+        handlerExecutionChain.afterCompletion(req, resp, handlerExecutionChain.getHandlerMethod(), ex);
     }
 
     private void processResultException(HttpServletRequest req, HttpServletResponse resp, HandlerMethod handlerMethod, Exception ex) throws Exception {
