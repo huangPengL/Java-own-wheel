@@ -17,6 +17,10 @@ public class WebMvcComposite implements WebMvcConfigurer{
     }
 
 
+    /**
+     * 将所有收集到的WebMvcConfigurer，主动调用addIntercept方法，实现拦截器和映射规则的注册
+     * @param registry
+     */
     @Override
     public void addIntercept(InterceptorRegistry registry) {
         for (WebMvcConfigurer webMvcConfigurer : webMvcConfigurers) {
