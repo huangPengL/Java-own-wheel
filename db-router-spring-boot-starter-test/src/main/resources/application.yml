@@ -1,0 +1,23 @@
+server:
+  port: 8091
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+
+# 路由配置
+router:
+  jdbc:
+    datasource:
+      dbCount: 2
+      tbCount: 4
+      list: db01,db02
+      db01:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/bugstack_01?useUnicode=true
+        username: root
+        password: 123456
+      db02:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/bugstack_02?useUnicode=true
+        username: root
+        password: 123456
