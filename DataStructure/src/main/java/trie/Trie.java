@@ -127,7 +127,6 @@ public class Trie {
                 j++;
             }
         }
-
         return ans;
     }
 
