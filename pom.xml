@@ -17,6 +17,7 @@
         <module>hpl-springmvc-starter</module>
         <module>db-router-spring-boot-starter</module>
         <module>db-router-spring-boot-starter-test</module>
+        <module>spring</module>
     </modules>
 
 </project>
