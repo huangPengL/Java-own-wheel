@@ -22,9 +22,14 @@ public class CglibSubclassingInstantiationStrategy implements InstantiationStrat
             public int hashCode() {
                 return super.hashCode();
             }
+
+            @Override
+            public boolean equals(Object obj) {
+                return super.equals(obj);
+            }
         });
         if (null == ctor) {
-            enhancer.create();
+            return enhancer.create();
         }
         return enhancer.create(ctor.getParameterTypes(), args);
     }

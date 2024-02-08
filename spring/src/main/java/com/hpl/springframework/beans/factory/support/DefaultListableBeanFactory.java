@@ -17,10 +17,10 @@ public class DefaultListableBeanFactory
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
 
     @Override
-    protected BeanDefinition getBeanDefinition(String name) throws BeansException {
-        BeanDefinition beanDefinition = beanDefinitionMap.get(name);
+    protected BeanDefinition getBeanDefinition(String beanName) throws BeansException {
+        BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
         if (beanDefinition == null){
-            throw new BeansException("No bean named '" + name + "' is defined");
+            throw new BeansException("No bean named '" + beanName + "' is defined");
         }
         return beanDefinition;
     }

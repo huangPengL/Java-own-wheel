@@ -13,30 +13,44 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     /**
      * 模板方法：
      *  单例容器中有则返回，否则获取bean定义（子类实现）。然后，通过bean定义创建bean实例（子类实现）
-     * @param name
+     * @param beanName
      * @return
      */
     @Override
-    public Object getBean(String name) throws BeansException {
-        return doGetBean(name, null);
+    public Object getBean(String beanName) throws BeansException {
+        return doGetBean(beanName, (Object) null);
     }
 
     @Override
-    public Object getBean(String name, Object... args) throws BeansException {
-        return doGetBean(name, args);
+    public Object getBean(String beanName, Object... args) throws BeansException {
+        return doGetBean(beanName, args);
     }
 
-    protected <T> T doGetBean(String name, final Object... args) throws BeansException {
-        Object bean = getSingleton(name);
+    protected <T> T doGetBean(String beanName, final Object... args) throws BeansException {
+        Object bean = getSingleton(beanName);
         if (bean != null) {
             return (T) bean;
         }
 
-        BeanDefinition beanDefinition = getBeanDefinition(name);
-        return (T) createBean(name, beanDefinition, args);
+        BeanDefinition beanDefinition = getBeanDefinition(beanName);
+        return (T) createBean(beanName, beanDefinition, args);
     }
 
-    protected abstract BeanDefinition getBeanDefinition(String name) throws BeansException;
+    /**
+     * 获取Bean的描述信息
+     * @param beanName
+     * @return
+     * @throws BeansException
+     */
+    protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;
 
-    protected abstract Object createBean(String name, BeanDefinition beanDefinition, Object... args) throws BeansException;
+    /**
+     * 创建Bean
+     * @param beanName
+     * @param beanDefinition
+     * @param args
+     * @return
+     * @throws BeansException
+     */
+    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object... args) throws BeansException;
 }
