@@ -8,6 +8,7 @@ import com.hpl.springframework.beans.factory.config.BeanDefinition;
 import com.hpl.springframework.beans.factory.config.BeanReference;
 import com.hpl.springframework.beans.factory.support.DefaultListableBeanFactory;
 import com.hpl.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import com.hpl.springframework.context.support.ClassPathXmlApplicationContext;
 import com.hpl.springframework.core.io.DefaultResourceLoader;
 import com.hpl.springframework.core.io.Resource;
 import com.hpl.springframework.test.dao.UserDao;
@@ -125,5 +126,17 @@ public class ApiTest {
         UserService userService = beanFactory.getBean("userService", UserService.class);
         String result = userService.getUserInfo();
         System.out.println("测试结果：" + result);
+    }
+
+    @Test
+    public void test_xml_application_context() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
+
+        // 2. 获取Bean对象调用方法
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        String result = userService.getUserInfo();
+        System.out.println("测试结果：" + result);
+        System.out.println(userService);
     }
 }

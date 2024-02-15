@@ -1,8 +1,10 @@
 package com.hpl.springframework.beans.factory.support;
 
 import com.hpl.springframework.beans.ex.BeansException;
+import com.hpl.springframework.beans.factory.ConfigurableListableBeanFactory;
 import com.hpl.springframework.beans.factory.config.BeanDefinition;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultListableBeanFactory
         extends AbstractAutowireCapableBeanFactory
-        implements BeanDefinitionRegistry{
+        implements BeanDefinitionRegistry, ConfigurableListableBeanFactory {
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
 
@@ -39,5 +41,26 @@ public class DefaultListableBeanFactory
     @Override
     public String[] getBeanDefinitionNames() {
         return beanDefinitionMap.keySet().toArray(new String[0]);
+    }
+
+    @Override
+    public <T> Map<String, T> getBeansOfType(Class<T> type) throws BeansException {
+        Map<String, T> result = new HashMap<>();
+        for(Map.Entry<String, BeanDefinition> entry: beanDefinitionMap.entrySet()){
+            String beanName = entry.getKey();
+            BeanDefinition beanDefinition = entry.getValue();
+            Class<?> beanClass = beanDefinition.getBeanClass();
+            if(type.isAssignableFrom(beanClass)){
+                result.put(beanName, (T) getBean(beanName));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void preInstantiateSingletons() throws BeansException {
+        for (String s : beanDefinitionMap.keySet()) {
+            getBean(s);
+        }
     }
 }
