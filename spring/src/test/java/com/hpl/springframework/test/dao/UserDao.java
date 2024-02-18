@@ -11,10 +11,16 @@ public class UserDao {
 
     private static final Map<String, String> hashMap = new HashMap<>();
 
-    static {
+    public void initDataMethod(){
+        System.out.println("执行：init-method");
         hashMap.put("10001", "hhh");
         hashMap.put("10002", "ppp");
         hashMap.put("10003", "lll");
+    }
+
+    public void destroyDataMethod(){
+        System.out.println("执行：destroy-method");
+        hashMap.clear();
     }
 
     public String queryUserName(String uId) {

@@ -1,12 +1,14 @@
 package com.hpl.springframework.test.service;
 
+import com.hpl.springframework.beans.factory.DisposableBean;
+import com.hpl.springframework.beans.factory.InitializingBean;
 import com.hpl.springframework.test.dao.UserDao;
 
 /**
  * @Author: huangpenglong
  * @Date: 2024/2/7 22:45
  */
-public class UserService {
+public class UserService implements InitializingBean, DisposableBean {
 
     private String uId;
 
@@ -29,6 +31,16 @@ public class UserService {
 
     public String getUserInfo(){
        return "查询用户信息" + userDao.queryUserName(uId);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("执行：UserService.destroy");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("执行：UserService.afterPropertiesSet");
     }
 
     public String getName() {
@@ -80,5 +92,7 @@ public class UserService {
                 ", userDao=" + userDao +
                 '}';
     }
+
+
 }
 
