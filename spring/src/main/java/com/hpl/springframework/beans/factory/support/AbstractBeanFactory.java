@@ -4,6 +4,7 @@ import com.hpl.springframework.beans.ex.BeansException;
 import com.hpl.springframework.beans.factory.config.BeanDefinition;
 import com.hpl.springframework.beans.factory.config.BeanPostProcessor;
 import com.hpl.springframework.beans.factory.config.ConfigurableBeanFactory;
+import com.hpl.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
  * @Date: 2024/2/7 22:23
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    private final ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
@@ -74,5 +77,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
 }

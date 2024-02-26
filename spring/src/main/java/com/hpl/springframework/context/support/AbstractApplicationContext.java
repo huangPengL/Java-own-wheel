@@ -4,6 +4,7 @@ import com.hpl.springframework.beans.ex.BeansException;
 import com.hpl.springframework.beans.factory.ConfigurableListableBeanFactory;
 import com.hpl.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import com.hpl.springframework.beans.factory.config.BeanPostProcessor;
+import com.hpl.springframework.beans.factory.support.ApplicationContextAwareProcessor;
 import com.hpl.springframework.context.ConfigurableApplicationContext;
 import com.hpl.springframework.core.io.DefaultResourceLoader;
 
@@ -22,13 +23,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         // 2. 获取BeanFactory
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
-        // 3. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor (Invoke factory processors registered as beans in the context.)
+        // 3. 添加 ApplicationContextAwareProcessor，让继承自 ApplicationContextAware 的 Bean 对象都能感知所属的 ApplicationContext
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+
+        // 4. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor (Invoke factory processors registered as beans in the context.)
         invokeBeanFactoryPostProcessors(beanFactory);
 
-        // 4. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作
+        // 5. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作
         registerBeanPostProcessors(beanFactory);
 
-        // 5. 提前实例化单例Bean对象
+        // 6. 提前实例化单例Bean对象
         beanFactory.preInstantiateSingletons();
     }
 

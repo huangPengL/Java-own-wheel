@@ -1,14 +1,19 @@
 package com.hpl.springframework.test.service;
 
-import com.hpl.springframework.beans.factory.DisposableBean;
-import com.hpl.springframework.beans.factory.InitializingBean;
+import com.hpl.springframework.beans.ex.BeansException;
+import com.hpl.springframework.beans.factory.*;
+import com.hpl.springframework.context.ApplicationContext;
 import com.hpl.springframework.test.dao.UserDao;
 
 /**
  * @Author: huangpenglong
  * @Date: 2024/2/7 22:45
  */
-public class UserService implements InitializingBean, DisposableBean {
+public class UserService implements InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, ApplicationContextAware, BeanFactoryAware {
+
+    private ApplicationContext applicationContext;
+    private BeanFactory beanFactory;
+
 
     private String uId;
 
@@ -94,5 +99,32 @@ public class UserService implements InitializingBean, DisposableBean {
     }
 
 
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        System.out.println("Bean Name is：" + name);
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        System.out.println("ClassLoader：" + classLoader);
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
 }
 
