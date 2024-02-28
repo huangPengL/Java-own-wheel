@@ -12,6 +12,7 @@ import com.hpl.springframework.context.support.ClassPathXmlApplicationContext;
 import com.hpl.springframework.core.io.DefaultResourceLoader;
 import com.hpl.springframework.core.io.Resource;
 import com.hpl.springframework.test.dao.UserDao;
+import com.hpl.springframework.test.event.CustomEvent;
 import com.hpl.springframework.test.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
@@ -185,5 +186,14 @@ public class ApiTest {
         // 4. 打印十六进制哈希
         System.out.println(userService01 + " 十六进制哈希：" + Integer.toHexString(userService01.hashCode()));
         System.out.println(userService02 + " 十六进制哈希：" + Integer.toHexString(userService02.hashCode()));
+    }
+
+
+    @Test
+    public void test_event() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 1019129009086763L, "成功了！"));
+
+        applicationContext.registerShutdownHook();
     }
 }

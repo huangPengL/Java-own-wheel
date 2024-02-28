@@ -7,7 +7,6 @@ import com.hpl.springframework.beans.factory.config.SingletonBeanRegistry;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -36,7 +35,6 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
         disposableBeans.put(beanName, bean);
     }
 
-
     @Override
     public void destroySingletons() {
 
@@ -53,5 +51,10 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
             }
             iterator.remove();
         }
+    }
+
+    @Override
+    public void registerSingleton(String beanName, Object singletonObject) {
+        this.singletonObjects.put(beanName, singletonObject);
     }
 }
