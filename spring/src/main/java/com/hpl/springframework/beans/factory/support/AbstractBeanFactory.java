@@ -1,6 +1,7 @@
 package com.hpl.springframework.beans.factory.support;
 
 import com.hpl.springframework.beans.ex.BeansException;
+import com.hpl.springframework.beans.factory.FactoryBean;
 import com.hpl.springframework.beans.factory.config.BeanDefinition;
 import com.hpl.springframework.beans.factory.config.BeanPostProcessor;
 import com.hpl.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -13,7 +14,7 @@ import java.util.List;
  * @Author: huangpenglong
  * @Date: 2024/2/7 22:23
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
     private final ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -43,11 +44,30 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     protected <T> T doGetBean(String beanName, final Object... args) throws BeansException {
         Object bean = getSingleton(beanName);
         if (bean != null) {
-            return (T) bean;
+            return (T) getObjectForBeanInstance(bean, beanName);
         }
 
+        // 若bean的scope不为singleton则bean始终为null，需要创建bean
         BeanDefinition beanDefinition = getBeanDefinition(beanName);
-        return (T) createBean(beanName, beanDefinition, args);
+        bean = createBean(beanName, beanDefinition, args);
+
+        return (T) getObjectForBeanInstance(bean, beanName);
+    }
+
+    /**
+     * 如果bean是FactoryBean类型，那么根据FactoryBean是否为单例模式从getObject中获取实例对象
+     * 即 调用getObjectFromFactoryBean
+     * @param bean
+     * @param beanName
+     * @return
+     */
+    private Object getObjectForBeanInstance(Object bean, String beanName) {
+        if(!(bean instanceof FactoryBean)){
+            return bean;
+        }
+
+        FactoryBean<?> factoryBean = (FactoryBean<?>) bean;
+        return getObjectFromFactoryBean(factoryBean, beanName);
     }
 
     /**

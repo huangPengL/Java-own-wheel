@@ -40,7 +40,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         // 注册实现了 DisposableBean 接口的 Bean 对象
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
 
-        addSingleton(beanName, bean);
+        // 判断 SCOPE_SINGLETON、SCOPE_PROTOTYPE
+        if(beanDefinition.isSingleton()){
+            addSingleton(beanName, bean);
+        }
+
         return bean;
     }
 
@@ -170,6 +174,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        // 非单例模式，spring不需要管理其生命周期
+        if(!beanDefinition.isSingleton()){
+            return;
+        }
         // 如果该bean实现了DisposableBean接口 或 该bean配置了destroy-method，则注册
         if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));

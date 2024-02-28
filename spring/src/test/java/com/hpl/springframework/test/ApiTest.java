@@ -166,4 +166,24 @@ public class ApiTest {
         System.out.println("ApplicationContextAware："+userService.getApplicationContext());
         System.out.println("BeanFactoryAware："+userService.getBeanFactory());
     }
+
+
+    @Test
+    public void test_prototype() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 获取Bean对象调用方法
+        UserService userService01 = applicationContext.getBean("userService", UserService.class);
+        UserService userService02 = applicationContext.getBean("userService", UserService.class);
+
+        // 3.
+        userService01.setName("hpl");
+        userService01.setName("阿里巴巴");
+
+        // 4. 打印十六进制哈希
+        System.out.println(userService01 + " 十六进制哈希：" + Integer.toHexString(userService01.hashCode()));
+        System.out.println(userService02 + " 十六进制哈希：" + Integer.toHexString(userService02.hashCode()));
+    }
 }

@@ -3,9 +3,14 @@
 
     <bean id="userDao" class="com.hpl.springframework.test.dao.UserDao"/>
 
-    <bean id="userService" class="com.hpl.springframework.test.service.UserService">
+    <bean id="userService" class="com.hpl.springframework.test.service.UserService" scope="prototype">
         <property name="uId" value="10001"/>
-        <property name="userDao" ref="userDao"/>
+        <property name="company" value="腾讯"/>
+        <property name="location" value="深圳"/>
+        <property name="userDao" ref="proxyUserDao"/>
     </bean>
+
+    <bean id="proxyUserDao" class="com.hpl.springframework.test.dao.ProxyBeanFactory"/>
+
 
 </beans>

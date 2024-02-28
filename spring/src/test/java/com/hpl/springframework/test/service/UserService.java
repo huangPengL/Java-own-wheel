@@ -3,6 +3,7 @@ package com.hpl.springframework.test.service;
 import com.hpl.springframework.beans.ex.BeansException;
 import com.hpl.springframework.beans.factory.*;
 import com.hpl.springframework.context.ApplicationContext;
+import com.hpl.springframework.test.dao.IUserDao;
 import com.hpl.springframework.test.dao.UserDao;
 
 /**
@@ -21,7 +22,7 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
 
     private String location;
 
-    private UserDao userDao;
+    private IUserDao userDao;
 
     public UserService() {
     }
@@ -56,11 +57,11 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
         this.uId = name;
     }
 
-    public UserDao getUserDao() {
+    public IUserDao getUserDao() {
         return userDao;
     }
 
-    public void setUserDao(UserDao userDao) {
+    public void setUserDao(IUserDao userDao) {
         this.userDao = userDao;
     }
 

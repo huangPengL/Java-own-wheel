@@ -1,5 +1,6 @@
 package com.hpl.springframework.beans.factory.xml;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import com.hpl.springframework.beans.ex.BeansException;
@@ -93,6 +94,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             String initMethod = bean.getAttribute("init-method");
             String destroyMethodName = bean.getAttribute("destroy-method");
 
+            String beanScope = bean.getAttribute("scope");
 
             // 获取 Class，方便获取类中的名称
             Class<?> clazz = Class.forName(className);
@@ -108,6 +110,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             beanDefinition.setInitMethodName(initMethod);
             beanDefinition.setDestroyMethodName(destroyMethodName);
 
+            if(!ObjectUtil.isEmpty(beanScope)) {
+                beanDefinition.setScope(beanScope);
+            }
 
             // 读取属性并填充
             for (int j = 0; j < bean.getChildNodes().getLength(); j++) {

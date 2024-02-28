@@ -23,9 +23,9 @@ import java.util.Set;
 @HandlesTypes(WebApplicationInitializer.class)
 
 public class WebServletContainerInitializer implements ServletContainerInitializer {
+
     @Override
     public void onStartup(Set<Class<?>> webApplications, ServletContext servletContext) throws ServletException {
-
         if (!ObjectUtils.isEmpty(webApplications)){
             final ArrayList<WebApplicationInitializer> initializers = new ArrayList<>(webApplications.size());
 

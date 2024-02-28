@@ -21,6 +21,21 @@ public class BeanDefinition {
 
     private String destroyMethodName;
 
+    private String scope = ConfigurableBeanFactory.SCOPE_SINGLETON;
+
+    private boolean singleton = true;
+
+    private boolean prototype = false;
+
+    /**
+     * 在xml注册Bean定义时，通过scope字段来判断是单例还是原型
+     */
+    public void setScope(String scope) {
+        this.scope = scope;
+        this.singleton = ConfigurableBeanFactory.SCOPE_SINGLETON.equals(scope);
+        this.prototype = ConfigurableBeanFactory.SCOPE_PROTOTYPE.equals(scope);
+    }
+
     public BeanDefinition(Class<?> beanClass) {
         this.beanClass = beanClass;
         this.propertyValues = new PropertyValues();
@@ -29,6 +44,18 @@ public class BeanDefinition {
     public BeanDefinition(Class<?> beanClass, PropertyValues propertyValues) {
         this.beanClass = beanClass;
         this.propertyValues = propertyValues != null ? propertyValues : new PropertyValues();
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public boolean isSingleton() {
+        return singleton;
+    }
+
+    public boolean isPrototype() {
+        return prototype;
     }
 
     public Class<?> getBeanClass() {
