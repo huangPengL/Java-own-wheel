@@ -102,21 +102,24 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+        System.out.println("UserService Aware感知BeanFactory");
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+        System.out.println("UserService Aware感知ApplicationContext");
     }
 
     @Override
     public void setBeanName(String name) {
-        System.out.println("Bean Name is：" + name);
+
+        System.out.println("UserService Aware感知 Bean Name is：" + name);
     }
 
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
-        System.out.println("ClassLoader：" + classLoader);
+        System.out.println("UserService Aware感知 ClassLoader：" + classLoader);
     }
 
     public ApplicationContext getApplicationContext() {
